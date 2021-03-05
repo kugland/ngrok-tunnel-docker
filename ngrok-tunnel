@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ $# -ne 1 ] || [[ ! "$1" =~ ^[1-9][0-9]*$ ]] || [ "$1" -le 0 ] || [ "$1" -gt 65535 ]; then
+  echo "Usage: ngrok-tunnel PORT";
+  exit
+else
+  echo ""
+  echo "Don't forget to add the appropriate firewall rule to allow ngrok to connect."
+  echo "For example, with ufw:"
+  echo ""
+  echo "  ufw allow in on docker0 to any port $1 proto tcp"
+  echo ""
+  # cf. https://stackoverflow.com/a/60740997
+  docker run -it -e "TARGET_PORT=$1" gtriggiano/ngrok-tunnel \
+    /bin/sh -c 'TARGET_HOST="$(ip -4 route show default | cut -d'\'' '\'' -f3)" node index.js'
+fi
