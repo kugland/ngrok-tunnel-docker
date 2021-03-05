@@ -2,7 +2,7 @@
 
 ngrok has stopped releasing its source code since version 2.0.
 If you don't trust its secret code, you have the option to run
-it inside a docker container. This script helps you doing just
+it inside a docker container. This script helps you do just
 that.
 
 ## Usage
