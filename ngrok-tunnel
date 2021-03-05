@@ -2,7 +2,7 @@
 
 if [ $# -ne 1 ] || [[ ! "$1" =~ ^[1-9][0-9]*$ ]] || [ "$1" -le 0 ] || [ "$1" -gt 65535 ]; then
   echo "Usage: ngrok-tunnel PORT";
-  exit
+  exit 1
 else
   echo ""
   echo "Don't forget to add the appropriate firewall rule to allow ngrok to connect."
