@@ -11,6 +11,6 @@ else
   echo "  ufw allow in on docker0 to any port $1 proto tcp"
   echo ""
   # cf. https://stackoverflow.com/a/60740997
-  docker run -it -e "TARGET_PORT=$1" gtriggiano/ngrok-tunnel \
+  docker run --rm -it -e "TARGET_PORT=$1" gtriggiano/ngrok-tunnel \
     /bin/sh -c 'TARGET_HOST="$(ip -4 route show default | cut -d'\'' '\'' -f3)" node index.js'
 fi
