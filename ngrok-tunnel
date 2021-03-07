@@ -8,7 +8,7 @@ else
   echo "Don't forget to add the appropriate firewall rule to allow ngrok to connect."
   echo "For example, with ufw:"
   echo ""
-  echo "  ufw allow in on docker0 to any port $1 proto tcp"
+  echo "  ufw allow in on docker0 to 0.0.0.0/0 port $1 proto tcp"
   echo ""
   # cf. https://stackoverflow.com/a/60740997
   docker run --rm -it -e "TARGET_PORT=$1" gtriggiano/ngrok-tunnel \
