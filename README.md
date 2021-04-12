@@ -1,3 +1,5 @@
+![AUR Version](https://img.shields.io/aur/version/ngrok-tunnel-docker)
+
 # Run ngrok through docker
 
 ngrok has stopped releasing its source code since version 2.0.
