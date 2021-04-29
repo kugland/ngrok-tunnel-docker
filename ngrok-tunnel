@@ -1,16 +1,37 @@
 #!/bin/bash
 
-if [ $# -ne 1 ] || [[ ! "$1" =~ ^[1-9][0-9]*$ ]] || [ "$1" -le 0 ] || [ "$1" -gt 65535 ]; then
-  echo "Usage: ngrok-tunnel PORT";
-  exit 1
+NGROK_PROTO=http
+
+case "$1" in
+  http|tcp)
+    NGROK_PROTO="$1"
+    shift
+    ;;
+esac
+
+if [[ "$1" =~ ^[0-9]+$ ]] || [ "$1" -le 0 ] || [ "$1" -gt 65535 ]; then
+  NGROK_PORT="$1"
 else
-  echo ""
-  echo "Don't forget to add the appropriate firewall rule to allow ngrok to connect."
-  echo "For example, with ufw:"
-  echo ""
-  echo "  ufw allow in on docker0 to 0.0.0.0/0 port $1 proto tcp"
-  echo ""
-  # cf. https://stackoverflow.com/a/60740997
-  docker run --rm -it -e "TARGET_PORT=$1" gtriggiano/ngrok-tunnel \
-    /bin/sh -c 'TARGET_HOST="$(ip -4 route show default | cut -d'\'' '\'' -f3)" node index.js'
+  echo 'Usage: ngrok-tunnel [<proto>] <port>'
+  echo ''
+  echo '<proto> is either "http" or "tcp"'
+  exit 1
 fi
+
+echo ""
+echo "Don't forget to add the appropriate firewall rule to allow ngrok to connect."
+echo "For example, with ufw:"
+echo ""
+echo "  ufw allow in on docker0 to 0.0.0.0/0 port $1 proto tcp"
+echo ""
+
+typeset -a RUN_PARAMS
+RUN_PARAMS=()
+if [[ -n "$NGROK_AUTHTOKEN" ]]; then
+  RUN_PARAMS+=("-e" "NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}")
+fi
+if [[ -f "$HOME/.ngrok2/ngrok.yml" ]]; then
+  RUN_PARAMS+=("-v" "$HOME/.ngrok2/ngrok.yml:/ngrok/.ngrok2/ngrok.yml:ro")
+fi
+
+docker run --rm -it "${RUN_PARAMS[@]}" kugland/ngrok "$NGROK_PROTO" "$NGROK_PORT"
